@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Scheduler</title>
+    <script src="index.js" defer></script>
+</head>
+<body style="background-color:bisque;">
+    <div class="main" style="display: flex;flex-direction:row;padding: 20px 20px 20px;">
+    <h5>Employee 1</h5>
+    <div class="dropdown" style="margin-top: 20px; margin-right: 20px;" onchange="SecondName()">
+        <select class="emp1" id="emp1">
+            <option disabled selected hidden>choose</option>
+            
+        </select>
+    </div>
+    <h5>Employee 2</h5>
+    <div class="dropdown" style="margin-top: 20px; margin-right: 20px;">
+        <select class="emp2" id="emp2">
+            <option disabled selected hidden>Choose</option>
+            
+            
+        </select>
+    </div>
+    <h5>Meeting</h5>
+    <div class="dropdown" style="margin-top: 20px; margin-right: 20px;">
+        <select class="meeting" id="meeting">
+            <option disabled selected hidden>Choose</option>
+            <option>Scrum</option>
+            <option>Grooming</option>
+            <option>Architecture Design</option>
+            <option>Payroll</option>
+            <option>Fun Activities</option>
+            <option>Security Analysis</option>
+            <option>UX Design</option>    
+        </select>
+    </div>
+    <button type="submit" id="done" class="done" style="margin-top: 20px; height: 20px;" onclick="MeetingSchedule()">Schedule Meeting</button>
+    </div>
+    <p class="show"></p>
+  
+</body>
+</html>
