@@ -113,7 +113,7 @@ async function storeAlbums() {
                 }
 
             });
-           
+
 
             const getdata = albumObjectStore.getAll()
             getdata.onsuccess = (event) => {
@@ -121,74 +121,71 @@ async function storeAlbums() {
                 console.log(getdata.result)
                 albumList.push(getdata.result)
                 //////////////////
-               
-                let j=0;
-                
-
+                let j = 0;
                 var html = document.querySelector('.main')
-                for (var i = 0; i < (albumList[0].length)/5; i++){ 
-                html.innerHTML+=`
+                for (let i = 0; i < (albumList[0].length) / 5; i++) {
+                    html.innerHTML += `
                 <div class="row mainrow">
-        <div class="col-sm-2 col-md-2" id="cc">
-          <div class="card" id="${index =albumList[0][j].id}">
-            <div class="card-body" >
+        <div class="col-sm-2 col-md-2" >
+          <div class="card" >
+            <div class="card-body" id="cc">
               <h5 class="card-title" id="cr1">${albumList[0][j].title}</h5>
               
             </div>
           </div>
         </div>
-        <div class="col-sm-2 col-md-2" id="cc">
-          <div class="card" id="${index =albumList[0][j+1].id}">
-            <div class="card-body" >
-              <h5 class="card-title" id="cr2">${albumList[0][j+1].title}</h5>
+        <div class="col-sm-2 col-md-2">
+          <div class="card" >
+            <div class="card-body" id="cc">
+              <h5 class="card-title" id="cr2">${albumList[0][j + 1].title}</h5>
               
             </div>
           </div>
         </div>
-        <div class="col-sm-2 col-md-2" id="cc">
-            <div class="card" id="${index =albumList[0][j+2].id}">
-              <div class="card-body" >
-                <h5 class="card-title" id="cr3">${albumList[0][j+2].title}</h5>
+        <div class="col-sm-2 col-md-2">
+            <div class="card" >
+              <div class="card-body" id="cc" >
+                <h5 class="card-title" id="cr3">${albumList[0][j + 2].title}</h5>
                 
               </div>
             </div>
           </div>
-          <div class="col-sm-2 col-md-2" id="cc">
-            <div class="card" id="${index =albumList[0][j+3].id}">
-              <div class="card-body" >
-                <h5 class="card-title" id="cr4">${albumList[0][j+3].title}</h5>
+          <div class="col-sm-2 col-md-2" >
+            <div class="card" >
+              <div class="card-body" id="cc">
+                <h5 class="card-title" id="cr4">${albumList[0][j + 3].title}</h5>
                 
               </div>
             </div>
           </div>
-          <div class="col-sm-2 col-md-2" id="cc">
-            <div class="card" id="${index =albumList[0][j+4].id}">
-              <div class="card-body" >
-                <h5 class="card-title" id="cr5">${albumList[0][j+4].title}</h5>
+          <div class="col-sm-2 col-md-2" >
+            <div class="card">
+              <div class="card-body" id="cc" >
+                <h5 class="card-title" id="cr5">${albumList[0][j + 4].title}</h5>
            
               </div>
             </div>
           </div>
     </div>
           `
-                  j=j+5;
-         }
-         document.getElementById("cc").addEventListener('click',ShowData)
-         
+                    j = j + 5;
+                }
+                document.getElementById("cc").addEventListener('click', ShowData)
+
             }
 
-            
+
             getdata.onerror = (event) => {
                 console.log("error occured on get");
             }
 
-            function ShowData(){
-                var display = document.querySelector('.show') 
-               // for (var i = 0; i < albumList[0].length; i++){ 
-                    for(var k =0; k <5000;k++){ 
-                    if(albumList[0][0].id== photoList[0][k].albumId)
-                    display.innerHTML+=
-                `
+            function ShowData() {
+                var display = document.querySelector('.show')
+                // for (var i = 0; i < albumList[0].length; i++){ 
+                for (var k = 0; k < 5000; k++) {
+                    if (albumList[0][0].id == photoList[0][k].albumId)
+                        display.innerHTML +=
+                            `
                 <div class="row mainrow">
         <div class="col-sm-2 col-md-2">
           <div class="card" id="pp">
@@ -201,7 +198,7 @@ async function storeAlbums() {
         <div class="col-sm-2 col-md-2">
         <div class="card" id="pp">
         <div class="card-body">
-          <div class="card-image" id="ph2"><img src="${photoList[0][k+1].url}"></div>
+          <div class="card-image" id="ph2"><img src="${photoList[0][k + 1].url}"></div>
           
             </div>
           </div>
@@ -209,7 +206,7 @@ async function storeAlbums() {
         <div class="col-sm-2 col-md-2">
         <div class="card" id="pp">
         <div class="card-body">
-          <div class="card-image" id="ph3"><img src="${photoList[0][k+2].url}"></div>
+          <div class="card-image" id="ph3"><img src="${photoList[0][k + 2].url}"></div>
           
               </div>
             </div>
@@ -217,7 +214,7 @@ async function storeAlbums() {
           <div class="col-sm-2 col-md-2">
           <div class="card" id="pp">
           <div class="card-body">
-            <div class="card-image" id="ph4"><img src="${photoList[0][k+3].url}"></div>
+            <div class="card-image" id="ph4"><img src="${photoList[0][k + 3].url}"></div>
              
               </div>
             </div>
@@ -225,20 +222,20 @@ async function storeAlbums() {
           <div class="col-sm-2 col-md-2">
           <div class="card" id="pp">
           <div class="card-body">
-            <div class="card-image" id="ph5"><img src="${photoList[0][k+4].url}"></div>
+            <div class="card-image" id="ph5"><img src="${photoList[0][k + 4].url}"></div>
             
               </div>
             </div>
           </div>
     </div>
                 `
-                k=k+5;
+                    k = k + 5;
+                }
             }
         }
-        }
 
-        };
     };
+};
 
 
 
@@ -247,6 +244,86 @@ async function storeAlbums() {
 
 storeAlbums()
 storePhotos()
+
+
+function createCards(result) {
+
+    var html = document.querySelector('.main')
+    html.style.display = "none"
+
+    var ss = document.querySelector('.searchlist')
+    console.log("hooooooooooo");
+    ss.style.display = "block"
+    ss.innerHTML += `<div class="row">`
+    for (let i = 0; i < result[0].length; i++) {
+        ss.innerHTML += `
+        <div class="col-sm-2 col-md-2" >
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">${result[0][i].title}</h5>
+              
+            </div>
+          </div>
+        </div> `
+
+    }
+
+    ss.innerHTML += `</div>`
+
+}
+
+
+function search() {
+    console.log("searching...............");
+    var searchname = document.getElementById("search").value;
+
+    
+        searchBy(searchname, albumList);
+    
+}
+
+
+
+function searchBy(searchname, albumList) {
+    console.log("inner serach......");
+    var searching = new RegExp(`${searchname}`, "gi")
+    var result = [];
+    var resultalbumname = albumList[0].filter(function (el) {
+        return searching.test(el.title);
+
+    });
+
+
+
+
+    result.push(...resultalbumname);
+    console.log(result);
+    var ss = document.getElementById('searchlist')
+    ss.innerHTML=""
+    var html = document.querySelector('.main')
+    html.style.display = "none"
+
+    ss.innerHTML += `<div class="row">`
+    for (let i = 0; i < result.length; i++) {
+        ss.innerHTML += `
+        <div class="col-sm-2 col-md-2" >
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">${result[i].title}</h5>
+              
+            </div>
+          </div>
+        </div> `
+
+    }
+
+    ss.innerHTML += `</div>`
+
+    }
+
+  
+
+
 
 
 

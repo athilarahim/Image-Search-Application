@@ -12,11 +12,23 @@
 </head>
 <body>
     <h1 style="text-align: center;">Albums</h1>
+    <input type="text" placeholder="search here..." class="search" id="search" oninput="search()">
     <div class="main"> 
     
     </div>
+    <div class="searchlist" id="searchlist"></div>
     <div class="show"></div>
-    
+    <style>
+        .card{
+            width: 100%;
+            height: 100px;
+            margin: 10px 10px 10px;
+        }
+        .card:hover{
+            box-shadow: 3px 3px lightblue;
+
+        }
+    </style>
 
 </body>
 </html>
