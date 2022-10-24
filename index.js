@@ -1,341 +1,302 @@
-
-let albumList = [];
-let photoList = [];
-
-let getAlbums = new Promise(resolve => {
-  fetch('https://jsonplaceholder.typicode.com/albums')
-    .then(function (response) { return response.json() })
-    .then(function (json) { resolve(json) })
-})
-
-let getPhotos = new Promise(resolve => {
-  fetch('https://jsonplaceholder.typicode.com/photos')
-    .then(function (response) { return response.json() })
-    .then(function (json) { resolve(json) })
-})
-
-
-async function storePhotos() {
-
-
-  let x = await getPhotos
-  //console.log(x);
-
-
-  const request = indexedDB.open("photodb", 3);
-
-  request.onerror = (event) => {
-
-    console.log("error");
-  };
-
-
-  request.onupgradeneeded = (event) => {
-    const db = event.target.result;
-
-    const objectStore = db.createObjectStore("photos", { keyPath: "id" });
-  }
-
-  request.onsuccess = (event) => {
-    const db = event.target.result;
-
-    const photosObjectStore = db.transaction('photos', "readwrite").objectStore('photos');
-    x.forEach((album) => {
-      //console.log(album);
-      const updatedList = photosObjectStore.add(album);
-      updatedList.onsuccess = () => {
-        console.log("photos added");
-
-      }
-
-    });
-  }
-}
-
-
-async function obtainPhotos() {
-
-  const request = indexedDB.open("photodb", 3);
-
-  request.onerror = (event) => {
-
-    console.log("error");
-  };
-
-
-  request.onsuccess = (event) => {
-    const db = event.target.result;
-    const photoObjectStore = db.transaction('photos', "readwrite").objectStore('photos');
-
-
-    const getdata = photoObjectStore.getAll()
-    getdata.onsuccess = (event) => {
-      photoList.push(getdata.result)
-
-
-
-    }
-  }
-}
-
-
-async function storeAlbums() {
-
-
-  let x = await getAlbums
-  //console.log(x);
-
-
-  const request = indexedDB.open("albumdb", 3);
-
-  request.onerror = (event) => {
-
-    console.log("error");
-  };
-
-
-  request.onupgradeneeded = (event) => {
-    const db = event.target.result;
-
-    const objectStore = db.createObjectStore("albums", { keyPath: "id" });
-  }
-
-  request.onsuccess = (event) => {
-    const db = event.target.result;
-
-    const albumObjectStore = db.transaction('albums', "readwrite").objectStore('albums');
-    x.forEach((album) => {
-      //console.log(album);
-      const updatedList = albumObjectStore.add(album);
-      updatedList.onsuccess = () => {
-        console.log("albums added");
-
-      }
-
-    });
-  }
-}
-
-
-async function obtainAlbum() {
-
-  const request = indexedDB.open("albumdb", 3);
-
-  request.onerror = (event) => {
-
-    console.log("error");
-  };
-
-
-  request.onsuccess = (event) => {
-    const db = event.target.result;
-
-    const albumObjectStore = db.transaction('albums', "readwrite").objectStore('albums');
-
-
-    const getdata = albumObjectStore.getAll()
-    getdata.onsuccess = (event) => {
-      // console.log("gotcha!!")
-      // console.log(getdata.result)
-      albumList.push(getdata.result)
-      //////////////////
-      var html = document.querySelector('.main')
-
-      var row = 0;
-      html.innerHTML = ""
-      //console.log(albumList);
-      while (row < albumList[0].length) {
-
-        html.innerHTML += `<div class="row mainrow">`
-
-        for (var k = 0; k < 5; k++) {
-
-          html.innerHTML += `
-    <div class="col-sm-2 col-md-2">
-    <div class="card" id="pp">
-    <div class="card-body">
-    <h5 class="card-title">${albumList[0][row].title}</h5>
-    </div>
-    </div>
-    </div>`
-          row += 1;
-        }
-
-
-        html.innerHTML += `</div>`
-
-      }
-
-
-
-      var cardss = document.getElementsByClassName("card")
-      for (var i = 0; i < cardss.length; i++) {
-        cardss[i].setAttribute("id", albumList[0][i].id)
-      }
-
-
-
-
-      var clickable = document.querySelectorAll(".card")
-      //console.log(clickable);
-
-
-      clickable.forEach((x) => {
-        x.addEventListener('click', () => {
-          // console.log(x);
-          Modal(x.id)
-        })
-      })
-    }
-
-
-    getdata.onerror = (event) => {
-      console.log("error occured on get");
-    }
-  }
-}
-
-
-storeAlbums()
-storePhotos()
-obtainAlbum()
-obtainPhotos()
-
-
-function search() {
-  console.log("searching...............");
-  var searchname = document.getElementById("search").value;
-
-
-  searchBy(searchname, albumList);
-
-}
-
-
-
-function searchBy(searchname, albumList) {
-  console.log("inner serach......");
-  var searching = new RegExp(`${searchname}`, "gi")
-  var result = [];
-
-  var resultalbumname = albumList[0].filter(function (el) {
-    return searching.test(el.title);
-
-  });
-
-  result.push(...resultalbumname);
-
-  var ss = document.querySelector('.main')
-  ss.innerHTML = ""
-  
-  var row = 0;
-  //console.log(result.length);
-  console.log(result);
-  while (row < result.length) {
-    ss.innerHTML += `<div class="row mainrow">`
-    for (var k = 0; k < 5; k++) {
-      // console.log(result[row]);
-
-        ss.innerHTML +=
-          `
-<div class="col-sm-2 col-md-2">
-<div class="card" id="pp">
-<div class="card-body">
-<h5 class="card-title">${result[row].title}</h5>
-</div>
-</div>
-</div>`
-      row += 1;
-    }
-    ss.innerHTML += `</div>`
-  }
-
-
-  
-  var cardss = document.getElementsByClassName("card")
- 
-
-  for (var i = 0; i < cardss.length; i++) {
-    cardss[i].setAttribute("id", result[i].id)
-  }
-
-
-  var clickable = document.querySelectorAll(".card")
-
-  clickable.forEach((x) => {
-    x.addEventListener('click', () => {
-      Modal(x.id)
-    })
-  })
-}
-
-
-/////////////////////search debounced///////////////////////////
-function debounce(func, timeout) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => { func.apply(this, args); }, timeout);
-  };
-}
-
-const processChanges = debounce(() => search(), 500);
-
-
-function Modal(num) {
-
-  var disp = document.getElementById("showmodal");
-  disp.innerHTML = ""
-  var string = ""
-  string += `<div id="myModal" class="modal">
-
-
-  <div class="modal-content">
-    <span class="close">&times;</span>`
-
-  var row = 0;
-  while (row < photoList[0].length) {
-    string += `<div class="row mainrow">`
-    for (var k = 0; k < 5; k++) {
-
-
-      if (num == photoList[0][row].albumId) {
-        string +=
-          `
-
-<div class="col-md-2">
-<div class="card" id="pp">
-<div class="card-body">
-<div class="card-image" id="ph1"><img src="${photoList[0][row].url}"></div>
-</div>
-</div>
-</div>
-
-`
-      }
-      row += 1;
-    }
-   string += `</div>`
-
-  }
-  string += `</div></div>`
-
-  disp.innerHTML = string
-  var modal = document.getElementById("myModal");
-
-  var span = document.getElementsByClassName("close")[0];
-
-  modal.style.display = "block";
-
-
-  span.onclick = function () {
-    modal.style.display = "none";
-  }
-
-
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  }
+// let AlbumList:any = [];
+// let PhotoList:any = [];
+// var html:any
+// var searchname:any
+// var ss:any
+// var disp:any
+// var modal:any
+// var span:any
+// var x:any
+// interface IAlbums{
+//     userId:number;
+//     id:number;
+//     title:string;
+// }
+// interface IPhotos{
+//     albumId:number;
+//     id:number;
+//     title:string;
+//     url: string,
+//     thumbnailUrl: string
+// }
+// interface DataStore{
+//     database:string;
+//     objectstore:string;
+// }
+// class DBstore implements DataStore{
+//     database:string;
+//     objectstore:string;
+//     api;
+//     public constructor( database:string,objectstore:string,api:any){
+//         this.database=database;
+//         this.objectstore=objectstore;
+//         this.api=this.callAPI(api)
+//     }
+//     public callAPI(api: string){
+//         var getapi: Promise<Array<IAlbums|IPhotos>>=new Promise(resolve => {
+//             fetch(api)
+//               .then(function (response) { return response.json() })
+//               .then(function (json) { resolve(json) })
+//           })
+//           return getapi;
+//     }
+// }
+// interface ISetstorage{
+//     StoreData():any
+// }
+// class storeALbumintoIndexDB implements ISetstorage{
+//     storealbum=new DBstore("albumdb","albums","https://jsonplaceholder.typicode.com/albums");
+//     StoreData():any{
+//         return this.storealbum;
+//     }
+// }
+// class storePhotointoIndexDB implements ISetstorage{
+//     storephotos=new DBstore("photodb","photoss","https://jsonplaceholder.typicode.com/photos");
+//     StoreData():any{
+//         return this.storephotos;
+//     }
+// }
+// interface Initialize{
+//     Initialize():any;
+// }
+// class InitializeAlbumData implements Initialize{
+//     data = new storeALbumintoIndexDB();
+//     albumlist=this.data.storealbum.api
+//     public async Initialize() {
+//         console.log("hiiiiiiiiiii");
+//         x = await this.albumlist
+//         console.log(x);
+//         const request = indexedDB.open(this.data.storealbum.database, 3);
+//         request.onerror = (event) => {
+//           console.log("error");
+//         };
+//         request.onupgradeneeded = (event:any) => {
+//           const db = event.target.result;
+//           const objectStore = db.createObjectStore(this.data.storealbum.objectstore, { keyPath: "id" });
+//         }
+//         request.onsuccess = (event:any) => {
+//           const db = event.target.result;
+//           const albumsObjectStore = db.transaction(this.data.storealbum.objectstore, "readwrite").objectStore(this.data.storealbum.objectstore);
+//           x.forEach((data:any) => {
+//             const updatedList = albumsObjectStore.add(data);
+//             updatedList.onsuccess = () => {
+//               console.log("Items added");
+//             }
+//           });
+//         }
+//     }
+// }
+// class InitializePhotoData implements Initialize{
+//     data= new storePhotointoIndexDB();
+//     photolist=this.data.storephotos.api
+//     public async Initialize() {
+//         console.log("heloooooo");
+//         x=await this.photolist;
+//         console.log(x);
+//         const request = indexedDB.open(this.data.storephotos.database, 3);
+//         request.onerror = (event) => {
+//           console.log("error");
+//         };
+//         request.onupgradeneeded = (event:any) => {
+//           const db = event.target.result;
+//           const objectStore = db.createObjectStore(this.data.storephotos.objectstore, { keyPath: "id" });
+//         }
+//         request.onsuccess = (event:any) => {
+//           const db = event.target.result;
+//           const photosObjectStore = db.transaction(this.data.storephotos.objectstore, "readwrite").objectStore(this.data.storephotos.objectstore);
+//           x.forEach((data:any) => {
+//             const updatedList = photosObjectStore.add(data);
+//             updatedList.onsuccess = () => {
+//               console.log("Items added");
+//             }
+//           });
+//         }     
+//     }
+// }
+// interface Obtain{
+//     ObtainDatas():any;
+// }
+// class ObtainAlbumData implements Obtain{
+//     dsalbum=new InitializeAlbumData();
+//     public async ObtainDatas() {
+//         await this.dsalbum.Initialize();
+//         const request = indexedDB.open(this.dsalbum.data.storealbum.database, 3);
+//           request.onerror = (event:any) => {   
+//             console.log("error");
+//           };   
+//           request.onsuccess = (event:any) => {
+//             const db = event.target.result;
+//             const albumObjectStore = db.transaction(this.dsalbum.data.storealbum.objectstore, "readwrite").objectStore(this.dsalbum.data.storealbum.objectstore);  
+//             const getdata = albumObjectStore.getAll()
+//             getdata.onsuccess = (event:any) => {
+//                console.log("gotcha albums!!")
+//               // console.log(getdata.result)
+//               AlbumList.push(getdata.result)
+//               let show = new DisplayAlbumData(AlbumList);
+//               show.ShowData(AlbumList);
+//     }
+// }}
+// }
+// class ObtainPhotoData implements Obtain{
+//     dsphotos=new InitializePhotoData();
+//     public async ObtainDatas() {
+//         await this.dsphotos.Initialize();
+//         const request = indexedDB.open(this.dsphotos.data.storephotos.database, 3);
+//           request.onerror = (event:any) => {    
+//             console.log("error");
+//           };        
+//           request.onsuccess = (event:any) => {
+//             const db = event.target.result;
+//             const photoObjectStore = db.transaction(this.dsphotos.data.storephotos.objectstore, "readwrite").objectStore(this.dsphotos.data.storephotos.objectstore);
+//             const getdata = photoObjectStore.getAll()
+//             getdata.onsuccess = (event:any) => {
+//                console.log("gotcha photos!!")
+//               // console.log(getdata.result)
+//               PhotoList.push(getdata.result)
+//             var cardss = document.getElementsByClassName("card")
+//             for (var i = 0; i < cardss.length; i++) {
+//             cardss[i].setAttribute("id", AlbumList[0][i].id)
+//             console.log(cardss[i].id);
+//             console.log("iddddddddddddddd");
+//             }
+//              var clickable = document.querySelectorAll(".card")
+//              clickable.forEach((cr) => {
+//              cr.addEventListener('click', () => {
+//              console.log("clicking");
+//             let dis=new ModalView();
+//             dis.View(cr.id)
+//     })
+// })
+//     }
+// }}
+// }
+// async function run(){
+// let dss=new ObtainAlbumData();
+// await dss.ObtainDatas();
+// let dsss=new ObtainPhotoData();
+// await dsss.ObtainDatas();
+// }
+// interface Display{
+//     list: Array<any>;
+//     ShowData(albumdata:any):any;
+// }
+// run();
+// class DisplayAlbumData implements Display{
+//     list: Array<any>;
+//     public constructor(list:Array<any>){
+//         this.list=list;
+//     }
+//     ShowData(AlbumList:any){
+//       html = document.querySelector('.main')
+//       html.innerHTML = ""
+//       for (var i = 0; i < AlbumList[0].length; i++) {
+//         html.innerHTML += `<div class ="card">
+//                                 <div class="cardcontents">
+//                                 <div class="cardtitle">
+//                                 <h3>${AlbumList[0][i].title}</h3>
+//                                 </div>
+//                                 </div>
+//                         </div>`
+//         }
+//         var clickable = document.querySelectorAll(".card")
+//         clickable.forEach((cr) => {
+//         cr.addEventListener('click', () => {
+//         console.log("clicking");
+//        let dis=new ModalView();
+//        dis.View(cr.id)
+// })
+// })
+//     }
+// }
+// interface ShowModal{
+//     View(idnum:any):any;
+// }
+// class ModalView implements ShowModal{
+//     View(idnum:any) {
+//         disp = document.querySelector(".modal-content");
+//         disp.innerHTML=""
+//           for (var i = 0; i < PhotoList[0].length; i++) {
+//               if (idnum == PhotoList[0][i].albumId) {
+//               disp.innerHTML+= `<div class ="card">
+//                                       <div class="cardcontents">
+//                                       <div class="cardtitle">
+//                                       <h3>${PhotoList[0][i].title}</h3>
+//                                       </div>
+//                                       <div class="card-image">
+//                                       <img src="${PhotoList[0][i].url}">
+//                                       </div>
+//                                       </div>
+//                               </div>`
+//           }
+//       }
+//         modal = document.getElementById("myModal");
+//         span = document.getElementsByClassName("close")[0];
+//         modal.style.display = "block";
+//         span.onclick = function () {
+//           modal.style.display = "none";
+//         }
+//         window.onclick = function (event) {
+//                 if (event.target == modal) {
+//                   modal.style.display = "none";
+//                 }
+//               }
+//     } 
+// }
+// interface SearchData{
+//   alblist:Array<any>
+// }
+// class Seaching implements SearchData{
+//   alblist: any;
+//   public constructor(alblist:Array<any>){
+//     this.alblist=this.search(alblist);
+//   }
+//   public search(AlbumList:any) {
+//     console.log("searching...............");
+//     var searchname1 = <HTMLInputElement>document.getElementById("search");
+//       var searchname = searchname1.value
+//     searchBy(searchname, AlbumList);
+//   } 
+// }
+// function searchBy(searchname:any, albumList:any) {
+//   console.log("inner serach......");
+//   var searching = new RegExp(`${searchname}`, "gi")
+//   var result = [];
+//   var resultalbumname = albumList[0].filter(function (el:any) {
+//     return searching.test(el.title);
+//   });
+//   result.push(...resultalbumname);
+//   html = document.querySelector('.main')
+//   html.innerHTML = ""
+//   for (var i = 0; i < result.length; i++) {
+//     html.innerHTML += `<div class ="card">
+//                             <div class="cardcontents">
+//                             <div class="cardtitle">
+//                             <h3>${result[i].title}</h3>
+//                             </div>
+//                             </div>
+//                     </div>`
+//     }
+// }
+// function debounce(func: Function, timeout = 500) {
+//     let timer: number;
+//     return function (this: any, ...args: any[]) {
+//         clearTimeout(timer);
+//         timer = setTimeout(() => {
+//             func.apply(this, args);
+//         }, timeout);
+//     };
+// }
+// const processChanges = debounce(() => {
+//   let fn = new Seaching(AlbumList);
+//   fn.search(AlbumList);
+// });
+var text;
+var display;
+var tss;
+function Show() {
+    text = document.getElementById("txt");
+    console.log(text);
+    var ts = text.value;
+    display = document.querySelector(".showdiv");
+    display.innerHTML = ts;
 }
